@@ -1,0 +1,13 @@
+import React from 'react';
+import { SafeAreaView } from 'react-native';
+import Layout from './components/Buoi7/Layout';
+
+const App = () => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Layout />
+    </SafeAreaView>
+  );
+};
+
+export default App;

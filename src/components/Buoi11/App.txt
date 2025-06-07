@@ -1,0 +1,14 @@
+//components/App.tsx
+import React from 'react';
+import { SafeAreaView } from 'react-native';
+import Sanpham from './components/Buoi11/Sanpham';
+
+const App = () => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Sanpham />
+    </SafeAreaView>
+  );
+};
+
+export default App;

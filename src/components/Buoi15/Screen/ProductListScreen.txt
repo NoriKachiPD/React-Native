@@ -1,0 +1,32 @@
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../AppNavigatorProduct';
+
+type ProductListScreenRouteProp = RouteProp<RootStackParamList, 'ProductListScreen'>;
+
+const ProductListScreen = () => {
+  const route = useRoute<ProductListScreenRouteProp>();
+  const { category } = route.params;
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Sản phẩm trong danh mục: {category}</Text>
+      {/* TODO: Hiển thị danh sách sản phẩm ở đây */}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+});
+
+export default ProductListScreen;

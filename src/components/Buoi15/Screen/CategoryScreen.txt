@@ -1,0 +1,50 @@
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../AppNavigatorProduct';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'CategoryScreen'>;
+
+const CategoryScreen = () => {
+  const navigation = useNavigation<NavigationProp>();
+
+  const categories = ['Đồ ăn', 'Nước uống', 'Gà rán', 'Trà sữa'];
+
+  const handleCategoryPress = (category: string) => {
+    navigation.navigate('ProductListScreen', { category });
+  };
+
+  return (
+    <View style={styles.container}>
+      {categories.map((category) => (
+        <TouchableOpacity
+          key={category}
+          style={styles.button}
+          onPress={() => handleCategoryPress(category)}
+        >
+          <Text style={styles.text}>{category}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  button: {
+    padding: 16,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 12,
+    borderRadius: 8,
+  },
+  text: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+});
+
+export default CategoryScreen;

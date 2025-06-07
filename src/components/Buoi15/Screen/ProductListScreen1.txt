@@ -1,0 +1,101 @@
+import React from 'react';
+import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../AppNavigatorProduct';
+
+type ProductListScreenRouteProp = RouteProp<RootStackParamList, 'ProductListScreen'>;
+
+type Product = {
+  id: string;
+  name: string;
+  price: string;
+  image: string;
+};
+
+// Khai báo các tên danh mục là literal type (union) dùng cho type safety
+type CategoryName = 'Đồ ăn' | 'Nước uống' | 'Gà rán' | 'Trà sữa';
+
+const sampleProducts: Record<CategoryName, Product[]> = {
+  'Đồ ăn': [
+    { id: '1', name: 'Cơm gà', price: '35.000đ', image: 'https://i.imgur.com/QZ5jytR.png' },
+    { id: '2', name: 'Bún bò', price: '40.000đ', image: 'https://i.imgur.com/CYzR8pP.png' },
+  ],
+  'Nước uống': [
+    { id: '3', name: 'Pepsi', price: '10.000đ', image: 'https://i.imgur.com/w3Gv1xQ.png' },
+    { id: '4', name: 'Trà đào', price: '15.000đ', image: 'https://i.imgur.com/JZ6p9u2.png' },
+  ],
+  'Gà rán': [
+    { id: '5', name: 'Gà cay', price: '45.000đ', image: 'https://i.imgur.com/1G7ZDc1.png' },
+    { id: '6', name: 'Gà BBQ', price: '50.000đ', image: 'https://i.imgur.com/F7TQJ3e.png' },
+  ],
+  'Trà sữa': [
+    { id: '7', name: 'Trà sữa trân châu', price: '28.000đ', image: 'https://i.imgur.com/fYuZObG.png' },
+    { id: '8', name: 'Trà sữa matcha', price: '30.000đ', image: 'https://i.imgur.com/zC3hdpA.png' },
+  ],
+};
+
+const ProductListScreen = () => {
+  const route = useRoute<ProductListScreenRouteProp>();
+  const { category } = route.params;
+
+  // Ép kiểu rõ ràng category để phù hợp với Record key
+  const products = sampleProducts[category as CategoryName] || [];
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Danh mục: {category}</Text>
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.productCard}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+            <View style={{ marginLeft: 12 }}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.price}>{item.price}</Text>
+            </View>
+          </View>
+        )}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  productCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    elevation: 2,
+  },
+  image: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  price: {
+    fontSize: 16,
+    color: '#888',
+    marginTop: 4,
+  },
+});
+
+export default ProductListScreen;
