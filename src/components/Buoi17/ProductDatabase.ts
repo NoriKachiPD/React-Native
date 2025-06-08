@@ -14,8 +14,9 @@ export interface Product {
   id: string;
   name: string;
   price: string;
-  image: string; // Tên file ảnh, ví dụ: 'ComGa.jpg'
+  image: string;
   categoryId: number;
+  description?: string; // Thêm thuộc tính description
 }
 
 const ProductDatabase = {

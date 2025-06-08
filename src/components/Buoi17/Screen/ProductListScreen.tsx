@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator, } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../AppNavigatorProduct';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -52,13 +52,16 @@ const ProductListScreen = () => {
         data={products}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.productCard}>
+          <TouchableOpacity
+            style={styles.productCard}
+            onPress={() => navigation.navigate('ProductDetailScreen', { productId: item.id })}
+          >
             <Image source={{ uri: item.image }} style={styles.image} onError={() => console.log(`Failed to load image for ${item.name}`)} />
             <View style={{ marginLeft: 12 }}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>{formatPrice(item.price)}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
       />

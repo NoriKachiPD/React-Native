@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProductDatabase, { Product, Category } from '../ProductDatabase';
 import { RootStackParamList } from '../AppNavigatorProduct';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 type ProductManagementScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProductManagementScreen'>;
 
@@ -20,10 +22,17 @@ const ProductManagementScreen = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
-  useEffect(() => {
-    loadCategories();
-    loadProducts();
-  }, []);
+  // useEffect(() => {
+  //   loadCategories();
+  //   loadProducts();
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCategories();
+      loadProducts();
+    }, [])
+  );
 
   useEffect(() => {
     filterProducts();
@@ -80,9 +89,10 @@ const ProductManagementScreen = () => {
   const renderHeader = () => (
     <View style={styles.headerRow}>
       <Text style={[styles.headerText, styles.imageColumn]}>Ảnh</Text>
-      <Text style={[styles.headerText, styles.nameColumn]}>Product Name</Text>
-      <Text style={[styles.headerText, styles.priceColumn]}>Price</Text>
-      <Text style={[styles.headerText, styles.categoryColumn]}>Category</Text>
+      <Text style={[styles.headerText, styles.nameColumn]}>Tên sản phẩm</Text>
+      <Text style={[styles.headerText, styles.priceColumn]}>Giá</Text>
+      <Text style={[styles.headerText, styles.categoryColumn]}>Danh mục</Text>
+      <Text style={[styles.headerText, styles.descriptionColumn]}>Mô tả</Text>
       <Text style={[styles.headerText, styles.actionsColumn]}>Thao tác</Text>
     </View>
   );
@@ -101,7 +111,7 @@ const ProductManagementScreen = () => {
               style={[styles.filterButton, filterCategory === 'all' && styles.activeFilter]}
               onPress={() => setFilterCategory('all')}
             >
-              <Text style={styles.buttonText}>All</Text>
+              <Text style={styles.buttonText}>Tất cả</Text>
             </TouchableOpacity>
             {categories.map(category => (
               <TouchableOpacity
@@ -121,7 +131,7 @@ const ProductManagementScreen = () => {
             {renderHeader()}
             <FlatList
               data={filteredProducts}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={({ item }) => {
                 const category = categories.find(c => c.id === item.categoryId);
                 return (
@@ -140,7 +150,14 @@ const ProductManagementScreen = () => {
                     <Text style={[styles.cell, styles.nameColumn, styles.cellText]}>{item.name}</Text>
                     <Text style={[styles.cell, styles.priceColumn, styles.cellText]}>{formatPrice(item.price)}</Text>
                     <Text style={[styles.cell, styles.categoryColumn, styles.cellText]}>
-                      {category ? category.name : 'No category'}
+                      {category ? category.name : 'Không có danh mục'}
+                    </Text>
+                    <Text
+                      style={[styles.cell, styles.descriptionColumn, styles.cellText]}
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                    >
+                      {item.description || 'Không có mô tả'}
                     </Text>
                     <View style={[styles.cell, styles.actionsColumn, styles.actionsCell]}>
                       <TouchableOpacity
@@ -148,14 +165,14 @@ const ProductManagementScreen = () => {
                         onPress={() => navigation.navigate('EditProductScreen', { product: item })}
                         activeOpacity={0.8}
                       >
-                        <Text style={styles.buttonText}>Edit</Text>
+                        <Text style={styles.buttonText}>Sửa</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.deleteButton}
                         onPress={() => onDeleteProduct(item.id)}
                         activeOpacity={0.8}
                       >
-                        <Text style={styles.buttonText}>Delete</Text>
+                        <Text style={styles.buttonText}>Xóa</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -171,7 +188,7 @@ const ProductManagementScreen = () => {
         onPress={() => navigation.navigate('AddProductScreen')}
         activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>Add Product</Text>
+        <Text style={styles.buttonText}>Thêm sản phẩm</Text>
       </TouchableOpacity>
     </View>
   );
@@ -180,19 +197,22 @@ const ProductManagementScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 16,
+    backgroundColor: '#E8F5E9', // Xanh nhạt pastel
+    paddingHorizontal: 12,
     paddingVertical: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#333333',
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#E91E63', // Hồng phấn
     marginBottom: 12,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   filterWrapper: {
-    height: 48,
+    height: 50,
     marginBottom: 12,
   },
   filterScrollContainer: {
@@ -204,22 +224,28 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   filterButton: {
-    backgroundColor: '#4DB6AC',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    backgroundColor: '#26A69A', // Xanh ngọc
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
     minWidth: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    flexShrink: 0,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   activeFilter: {
-    backgroundColor: '#00796B',
+    backgroundColor: '#0288D1', // Xanh dương
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'center',
   },
   tableWrapper: {
@@ -227,18 +253,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   tableContainer: {
-    minWidth: 700,
+    minWidth: 900, // Tăng để chứa cột mô tả
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
   },
   headerRow: {
     flexDirection: 'row',
-    backgroundColor: '#e0e0e0',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
+    backgroundColor: '#F1F8E9', // Xanh pastel
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#E91E63', // Viền hồng
   },
   headerText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#333333',
     textAlign: 'center',
   },
@@ -247,8 +280,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-    backgroundColor: '#ffffff',
+    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
   },
   cell: {
     justifyContent: 'center',
@@ -267,6 +300,9 @@ const styles = StyleSheet.create({
   categoryColumn: {
     width: 120,
   },
+  descriptionColumn: {
+    width: 200, // Cột mô tả rộng
+  },
   actionsColumn: {
     width: 140,
   },
@@ -274,6 +310,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   cellText: {
     fontSize: 14,
@@ -285,27 +323,35 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   editButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#26A69A', // Xanh ngọc
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
+    elevation: 3,
   },
   deleteButton: {
-    backgroundColor: '#FF5722',
+    backgroundColor: '#FF5722', // Cam
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
+    elevation: 3,
   },
   addButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#E91E63', // Hồng phấn
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#4DB6AC',
+    elevation: 8,
+    shadowColor: '#000',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#FFCA28', // Viền vàng
   },
 });
 

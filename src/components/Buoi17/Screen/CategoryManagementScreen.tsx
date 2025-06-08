@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, Alert, } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProductDatabase, { Category } from '../ProductDatabase';
 import { RootStackParamList } from '../AppNavigatorProduct';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 type CategoryManagementScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CategoryManagementScreen'>;
 
@@ -14,9 +16,15 @@ const CategoryManagementScreen = () => {
   const [filterType, setFilterType] = useState<'all' | 'hasProducts' | 'noProducts'>('all');
   const [productsCount, setProductsCount] = useState<{ [key: number]: number }>({});
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
+  // useEffect(() => {
+  //   loadCategories();
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCategories(); // gọi khi màn hình được focus
+    }, [])
+  );
 
   useEffect(() => {
     if (categories.length > 0) {
@@ -68,23 +76,31 @@ const CategoryManagementScreen = () => {
   };
 
   const onDeleteCategory = async (id: number) => {
-    Alert.alert('Xác nhận', 'Bạn có chắc muốn xóa danh mục này? Các sản phẩm liên quan cũng sẽ bị xóa.', [
-      { text: 'Hủy', style: 'cancel' },
-      {
-        text: 'Xóa',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await ProductDatabase.deleteCategory(id);
-            Alert.alert('Thông báo', 'Xóa danh mục thành công');
-            loadCategories();
-          } catch (e) {
-            console.error('Error deleting category:', e);
-            Alert.alert('Thông báo', 'Xóa danh mục thất bại');
-          }
+    const category = categories.find(c => c.id === id);
+    const productCount = productsCount[id] || 0;
+
+    Alert.alert(
+      'Xác nhận',
+      `Bạn có chắc muốn xóa danh mục "${category?.name}"? ${productCount > 0 ? `${productCount} sản phẩm liên quan cũng sẽ bị xóa.` : 'Danh mục này không có sản phẩm.'}`,
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Xóa',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await ProductDatabase.deleteCategory(id);
+              Alert.alert('Thông báo', 'Xóa danh mục và sản phẩm liên quan thành công');
+              await loadCategories();
+              await loadProductsCount();
+            } catch (e) {
+              console.error('Error deleting category:', e);
+              Alert.alert('Lỗi', 'Xóa danh mục thất bại');
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const renderHeader = () => (

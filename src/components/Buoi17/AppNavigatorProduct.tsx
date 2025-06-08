@@ -12,6 +12,7 @@ import ProductManagementScreen from './Screen/ProductManagementScreen';
 import AddProductScreen from './Screen/AddProductScreen';
 import EditProductScreen from './Screen/EditProductScreen';
 import ProductListScreen from './Screen/ProductListScreen';
+import ProductDetailScreen from './Screen/ProductDetailScreen';
 import ProfileScreen from './Screen/ProfileScreen';
 import RegisterScreen from './Screen/RegisterScreen';
 import LoginScreen from './Screen/LoginScreen';
@@ -33,6 +34,7 @@ export type RootStackParamList = {
   AddProductScreen: undefined;
   EditProductScreen: { product: Product };
   ProductListScreen: { categoryId: number; categoryName: string };
+  ProductDetailScreen: { productId: string };
   ProfileScreen: { user?: User };
   RegisterScreen: undefined;
   LoginScreen: undefined;
@@ -57,6 +59,7 @@ const AppNavigator = () => {
       <Stack.Screen name="AddProductScreen" component={AddProductScreen} options={{ title: 'Thêm Sản Phẩm' }} />
       <Stack.Screen name="EditProductScreen" component={EditProductScreen} options={{ title: 'Sửa Sản Phẩm' }} />
       <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{ title: 'Danh Sách Sản Phẩm' }} />
+      <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{ title: 'Chi Tiết Sản Phẩm' }} />
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}

@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import UserDatabase, { User } from '../UserDatabase';
 import { RootStackParamList } from '../AppNavigatorProduct';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 type UserManagementScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'UserManagementScreen'>;
 
@@ -13,9 +15,15 @@ const UserManagementScreen = () => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [filterRole, setFilterRole] = useState<'all' | 'admin' | 'user'>('all');
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+  // useEffect(() => {
+  //   loadUsers();
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadUsers();
+    }, [])
+  );
 
   useEffect(() => {
     filterUsers();

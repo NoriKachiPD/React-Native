@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -24,6 +24,7 @@ const EditProductScreen = () => {
 
   const [name, setName] = useState(product.name);
   const [priceText, setPriceText] = useState(product.price);
+  const [description, setDescription] = useState(product.description ?? '');
   const [image, setImage] = useState<string | null>(product.image);
   const [categoryId, setCategoryId] = useState(product.categoryId.toString());
   const [categories, setCategories] = useState<Category[]>([]);
@@ -56,7 +57,7 @@ const EditProductScreen = () => {
 
   const onSaveProduct = async () => {
     if (!name.trim() || !priceText.trim() || !image || !categoryId) {
-      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin và chọn ảnh');
+      Alert.alert('Lỗi', 'Vui lòng nhập tên, giá, chọn ảnh và danh mục');
       return;
     }
 
@@ -72,6 +73,7 @@ const EditProductScreen = () => {
       price: numericPrice.toString(),
       image,
       categoryId: Number(categoryId),
+      description: description.trim() || undefined,
     };
 
     try {
@@ -97,10 +99,19 @@ const EditProductScreen = () => {
           <Text style={styles.buttonText}>Chọn Ảnh</Text>
         </TouchableOpacity>
         <TextInput
-          placeholder="Tên sản phẩm"
+          placeholder="Tên sản phẩm (VD: Sushi Roll)"
           value={name}
           onChangeText={setName}
           style={styles.input}
+          autoCapitalize="sentences"
+        />
+        <TextInput
+          placeholder="Mô tả sản phẩm (VD: Sushi cuộn cá hồi tươi ngon)"
+          value={description}
+          onChangeText={setDescription}
+          style={[styles.input, styles.descriptionInput]}
+          multiline
+          numberOfLines={4}
           autoCapitalize="sentences"
         />
         <View style={styles.priceInputContainer}>
@@ -144,49 +155,61 @@ const EditProductScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E8F5E9', // Xanh pastel
     justifyContent: 'flex-start',
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#E91E63', // Hồng phấn
     marginBottom: 16,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+    width: 120,
+    height: 120,
+    borderRadius: 12,
     alignSelf: 'center',
     marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#FFCA28', // Viền vàng
   },
   imageButton: {
-    backgroundColor: '#FF9800',
+    backgroundColor: '#FF5722', // Cam
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 12,
-    elevation: 5,
-    shadowColor: '#FF9800',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 16,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+  },
+  descriptionInput: {
+    height: 100,
+    textAlignVertical: 'top',
+    paddingTop: 12,
   },
   priceInputContainer: {
     flexDirection: 'row',
@@ -198,25 +221,26 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   currencyText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#333',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
   picker: {
     height: 50,
     width: '100%',
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -224,33 +248,37 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   saveButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#26A69A', // Xanh ngọc
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     flex: 1,
     marginRight: 8,
-    elevation: 5,
-    shadowColor: '#4DB6AC',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   backButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0288D1', // Xanh dương
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     flex: 1,
     marginLeft: 8,
-    elevation: 5,
-    shadowColor: '#2196F3',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
   },
