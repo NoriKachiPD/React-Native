@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
@@ -31,18 +31,18 @@ const AddUserScreen = () => {
   };
 
   const onSaveUser = async () => {
-    if (!username || !password || !email || !phone || !image || !level) {
-      Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin và chọn ảnh');
+    if (!username || !password || !email || !phone || !level) {
+      Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
       return;
     }
 
     const userToSave = {
-      id: Date.now(), // Tạo id duy nhất
+      id: Date.now(),
       username,
       password,
       email,
       phone,
-      image,
+      image: image ?? '', // nếu null thì thay bằng chuỗi rỗng
       level: Number(level),
     };
 
@@ -54,34 +54,26 @@ const AddUserScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Thêm User</Text>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.avatar} />
-        ) : (
-          <View style={[styles.avatar, styles.placeholderAvatar]}>
-            <Text style={styles.placeholderText}>Chưa chọn ảnh</Text>
-          </View>
-        )}
+        <Image
+          source={image ? { uri: image } : { uri: 'https://via.placeholder.com/100' }}
+          style={styles.avatar}
+          onError={() => console.log('Failed to load image')}
+        />
         <TouchableOpacity style={styles.imageButton} onPress={pickImage} activeOpacity={0.8}>
           <Text style={styles.buttonText}>Chọn Ảnh</Text>
         </TouchableOpacity>
         <TextInput
-          placeholder="Username"
+          placeholder="Username (VD: admin123)"
           value={username}
           onChangeText={setUsername}
           style={styles.input}
           autoCapitalize="none"
         />
         <TextInput
-          placeholder="Password"
+          placeholder="Password (VD: Pass123!)"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -89,7 +81,7 @@ const AddUserScreen = () => {
           autoCapitalize="none"
         />
         <TextInput
-          placeholder="Email"
+          placeholder="Email (VD: user@example.com)"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -97,7 +89,7 @@ const AddUserScreen = () => {
           autoCapitalize="none"
         />
         <TextInput
-          placeholder="Phone"
+          placeholder="Phone (VD: 0123456789)"
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
@@ -114,11 +106,7 @@ const AddUserScreen = () => {
           </Picker>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={onSaveUser}
-            activeOpacity={0.8}
-          >
+          <TouchableOpacity style={styles.saveButton} onPress={onSaveUser} activeOpacity={0.8}>
             <Text style={styles.buttonText}>Lưu</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -137,73 +125,73 @@ const AddUserScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E8F5E9', // Xanh pastel
+    justifyContent: 'flex-start',
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#E91E63', // Hồng phấn
     marginBottom: 16,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     alignSelf: 'center',
     marginBottom: 12,
-  },
-  placeholderAvatar: {
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  placeholderText: {
-    color: '#666',
-    fontSize: 16,
+    borderWidth: 2,
+    borderColor: '#FFCA28', // Viền vàng
   },
   imageButton: {
-    backgroundColor: '#FF9800',
+    backgroundColor: '#FF5722', // Cam
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 12,
-    elevation: 5,
-    shadowColor: '#FF9800',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 16,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
   picker: {
     height: 50,
     width: '100%',
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -211,33 +199,37 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   saveButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#26A69A', // Xanh ngọc
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     flex: 1,
     marginRight: 8,
-    elevation: 5,
-    shadowColor: '#4DB6AC',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   backButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0288D1', // Xanh dương
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     flex: 1,
     marginLeft: 8,
-    elevation: 5,
-    shadowColor: '#2196F3',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
   },

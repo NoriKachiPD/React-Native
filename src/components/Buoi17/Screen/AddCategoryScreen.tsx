@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProductDatabase, { Category } from '../ProductDatabase';
@@ -53,7 +53,7 @@ const AddCategoryScreen = () => {
           autoCapitalize="sentences"
         />
         <TextInput
-          placeholder="Tên icon (VD: food, MaterialCommunityIcons)"
+          placeholder="Tên icon (VD: 🍣)"
           value={icon}
           onChangeText={setIcon}
           style={styles.input}
@@ -86,28 +86,31 @@ const AddCategoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E8F5E9', // Xanh pastel
     justifyContent: 'flex-start',
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#E91E63', // Hồng phấn
     marginBottom: 16,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: '#E0E0E0',
+    backgroundColor: '#FFFFFF',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 16,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
   },
@@ -117,33 +120,37 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   saveButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#26A69A', // Xanh ngọc
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     flex: 1,
     marginRight: 8,
-    elevation: 5,
-    shadowColor: '#4DB6AC',
-    shadowOpacity: 0.4,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   backButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    flex: 1,
-    marginLeft: 8,
-    elevation: 5,
-    shadowColor: '#2196F3',
-    shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    backgroundColor: '#0288D1', // Xanh dương
+    paddingVertical:16,
+    borderRadius:12,
+    alignItems:'center',
+    flex:1,
+    marginLeft:8,
+    elevation:6,
+    shadowColor:'#000',
+    shadowOpacity:0.3,
+    shadowOffset:{width:0,height:3},
+    shadowRadius:5,
+    borderWidth:1,
+    borderColor:'#FFCA28', // Viền vàng
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
   },

@@ -18,6 +18,7 @@ import RegisterScreen from './Screen/RegisterScreen';
 import LoginScreen from './Screen/LoginScreen';
 import CategoryScreen from './Screen/CategoryScreen';
 import ProfileEditScreen from './Screen/ProfileEditScreen';
+import SearchResultsScreen from './Screen/SearchResultsScreen';
 import { User } from './UserDatabase';
 import { Product, Category } from './ProductDatabase';
 
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   CategoryScreen: undefined;
   ProfileEditScreen: { user: User };
+  SearchResultsScreen: { query: string }; // Thêm SearchResultsScreen
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -101,6 +103,7 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen name="ProfileEditScreen" component={ProfileEditScreen} options={{ title: 'Chỉnh Sửa Hồ Sơ' }} />
+      <Stack.Screen name="SearchResultsScreen" component={SearchResultsScreen} options={{ title: 'Kết Quả Tìm Kiếm' }} />
     </Stack.Navigator>
   );
 };
