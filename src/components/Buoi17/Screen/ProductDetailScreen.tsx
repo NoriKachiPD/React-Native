@@ -5,6 +5,7 @@ import { RootStackParamList } from '../AppNavigatorProduct';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProductDatabase, { Product } from '../ProductDatabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ProductDetailScreenRouteProp = RouteProp<RootStackParamList, 'ProductDetailScreen'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProductDetailScreen'>;
@@ -23,7 +24,23 @@ const ProductDetailScreen = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [countdown, setCountdown] = useState<number>(0);
   const [showOrderModal, setShowOrderModal] = useState<boolean>(false);
-  const [modalScale] = useState(new Animated.Value(0)); // Animation cho Modal
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [modalScale] = useState(new Animated.Value(0));
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // Kiểm tra trạng thái đăng nhập
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        setIsLoggedIn(!!storedUser); // true nếu có user, false nếu không
+        console.log('Login status:', !!storedUser);
+      } catch (e) {
+        console.error('Error checking login status:', e);
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -47,22 +64,23 @@ const ProductDetailScreen = () => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (showOrderModal && countdown > 0) {
+    if ((showOrderModal || showLoginModal) && countdown > 0) {
       timer = setInterval(() => {
         setCountdown(prev => {
           const next = prev - 1;
           if (next <= 0) {
             setShowOrderModal(false);
+            setShowLoginModal(false);
           }
           return next;
         });
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [showOrderModal, countdown]);
+  }, [showOrderModal, showLoginModal, countdown]);
 
   useEffect(() => {
-    if (showOrderModal) {
+    if (showOrderModal || showLoginModal) {
       Animated.spring(modalScale, {
         toValue: 1,
         friction: 8,
@@ -72,10 +90,16 @@ const ProductDetailScreen = () => {
     } else {
       modalScale.setValue(0);
     }
-  }, [showOrderModal, modalScale]);
+  }, [showOrderModal, showLoginModal, modalScale]);
 
   const handleOrder = () => {
     if (!product) return;
+
+    if (!isLoggedIn) {
+      setCountdown(10);
+      setShowLoginModal(true);
+      return;
+    }
 
     Alert.alert(
       'Xác nhận đặt món',
@@ -122,13 +146,18 @@ const ProductDetailScreen = () => {
         </TouchableOpacity>
       </ScrollView>
 
+      {/* Modal đặt món thành công */}
       <Modal
         visible={showOrderModal}
         transparent={true}
         animationType="fade"
         onRequestClose={() => setShowOrderModal(false)}
       >
-        <View style={styles.modalOverlay}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowOrderModal(false)}
+        >
           <Animated.View style={[styles.modalContent, { transform: [{ scale: modalScale }] }]}>
             <Ionicons name="checkmark-circle" size={60} color="#26A69A" style={styles.modalIcon} />
             <Text style={styles.modalTitle}>Đặt món thành công</Text>
@@ -139,7 +168,41 @@ const ProductDetailScreen = () => {
               <Text style={styles.modalCloseText}>Đóng</Text>
             </TouchableOpacity>
           </Animated.View>
-        </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Modal yêu cầu đăng nhập */}
+      <Modal
+        visible={showLoginModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowLoginModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowLoginModal(false)}
+        >
+          <Animated.View style={[styles.modalContent, { transform: [{ scale: modalScale }] }]}>
+            <Ionicons name="alert-circle" size={60} color="#E91E63" style={styles.modalIcon} />
+            <Text style={styles.modalTitle}>Bạn chưa đăng nhập</Text>
+            <Text style={styles.modalMessage}>
+              Vui lòng đăng nhập để đặt món. Thông báo này sẽ đóng sau {countdown}s.
+            </Text>
+            <TouchableOpacity
+              style={styles.modalLoginButton}
+              onPress={() => {
+                setShowLoginModal(false);
+                navigation.navigate('LoginScreen');
+              }}
+            >
+              <Text style={styles.modalCloseText}>Đăng nhập</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowLoginModal(false)}>
+              <Text style={styles.modalCloseText}>Đóng</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -175,7 +238,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.03 }],
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: '900',
     color: '#E91E63', // Hồng phấn nổi bật
     marginBottom: 8,
@@ -281,6 +344,21 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     borderWidth: 1,
     borderColor: '#FFCA28', // Viền vàng
+    marginTop: 10,
+  },
+  modalLoginButton: {
+    backgroundColor: '#0288D1', // Xanh dương
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
+    marginBottom: 10,
   },
   modalCloseText: {
     color: '#FFFFFF',

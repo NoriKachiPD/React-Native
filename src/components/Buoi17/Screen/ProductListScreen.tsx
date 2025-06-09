@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   title: {
-    fontSize: 24,
+    fontSize: 19,
     fontWeight: '900',
     color: '#E91E63',
     textShadowColor: 'rgba(0,0,0,0.2)',
