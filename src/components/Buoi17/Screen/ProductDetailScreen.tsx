@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, Modal, ScrollView, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, Modal, ScrollView, Animated, } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../AppNavigatorProduct';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
