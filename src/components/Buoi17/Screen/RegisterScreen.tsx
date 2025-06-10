@@ -55,7 +55,7 @@ const RegisterScreen = () => {
       level: 3,
       email,
       phone,
-      image: 'src/Img/1.jpg',
+      image: '1.jpg', // Sửa đường dẫn ảnh
     });
 
     if (success) {
@@ -198,20 +198,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkWrapper: {
-    flexDirection: 'row', // Đặt hàng ngang
-    alignItems: 'center', // Căn giữa theo chiều dọc
-    flexWrap: 'nowrap', // Không xuống dòng
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
   },
   link: {
     color: '#FFFFFF',
     fontSize: 16,
-    lineHeight: 24, // Đảm bảo căn dòng
+    lineHeight: 24,
   },
   linkHighlight: {
     color: '#3498DB',
     fontWeight: 'bold',
     fontSize: 16,
-    lineHeight: 24, // Đồng bộ với link
+    lineHeight: 24,
     textDecorationLine: 'underline',
   },
 });
