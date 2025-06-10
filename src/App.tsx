@@ -5,11 +5,11 @@ import UserDatabase from './components/Buoi17/UserDatabase';  // nhớ import đ
 
 export default function App() {
   useEffect(() => {
-    async function initialize() {
-      await UserDatabase.init();
-      console.log('UserDatabase initialized with default admin.');
-    }
-    initialize();
+    // async function initialize() {
+    // await UserDatabase.init();
+    //   console.log('UserDatabase initialized with default admin.');
+    // }
+    // initialize();
   }, []);
 
   return (

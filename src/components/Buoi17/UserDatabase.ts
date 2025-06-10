@@ -47,31 +47,31 @@ const UserDatabase = {
     }
   },
 
-  init: async (): Promise<void> => {
-    try {
-      await UserDatabase.migrateAddIdToUsers();
-      const users = await UserDatabase.getUsers();
-      const adminExists = users.some(
-        (u) => u.username === 'admin' && u.password === 'admin'
-      );
-      if (!adminExists) {
-        const maxId = users.reduce((max, u) => (u.id && u.id > max ? u.id : max), 0);
-        users.push({
-          id: maxId + 1,
-          username: 'admin',
-          password: 'admin',
-          level: 1,
-          email: 'phatchau16520@gmail.com',
-          phone: '0935370171',
-          image: '1.jpg',
-        });
-        await UserDatabase.saveUsers(users);
-        console.log('UserDatabase initialized with default admin.');
-      }
-    } catch (e) {
-      console.error('Lỗi khi khởi tạo tài khoản admin:', e);
-    }
-  },
+  // init: async (): Promise<void> => {
+  //   try {
+  //     await UserDatabase.migrateAddIdToUsers();
+  //     const users = await UserDatabase.getUsers();
+  //     const adminExists = users.some(
+  //       (u) => u.username === 'admin' && u.password === 'admin'
+  //     );
+  //     if (!adminExists) {
+  //       const maxId = users.reduce((max, u) => (u.id && u.id > max ? u.id : max), 0);
+  //       users.push({
+  //         id: maxId + 1,
+  //         username: 'Admin',
+  //         password: 'Admin',
+  //         level: 1,
+  //         email: 'phatchau16520@gmail.com',
+  //         phone: '0935370171',
+  //         image: 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg',
+  //       });
+  //       await UserDatabase.saveUsers(users);
+  //       console.log('UserDatabase initialized with default admin.');
+  //     }
+  //   } catch (e) {
+  //     console.error('Lỗi khi khởi tạo tài khoản admin:', e);
+  //   }
+  // },
 
   getUsers: async (): Promise<User[]> => {
     try {

@@ -54,7 +54,11 @@ const AddUserScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Thêm User</Text>
         <Image
@@ -71,6 +75,7 @@ const AddUserScreen = () => {
           onChangeText={setUsername}
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Password (VD: Pass123!)"
@@ -79,6 +84,7 @@ const AddUserScreen = () => {
           secureTextEntry
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Email (VD: user@example.com)"
@@ -87,6 +93,7 @@ const AddUserScreen = () => {
           keyboardType="email-address"
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Phone (VD: 0123456789)"
@@ -94,6 +101,7 @@ const AddUserScreen = () => {
           onChangeText={setPhone}
           keyboardType="phone-pad"
           style={styles.input}
+          placeholderTextColor="#888"
         />
         <View style={styles.pickerContainer}>
           <Picker
@@ -175,6 +183,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    color: '#333', // Thêm màu chữ
   },
   pickerContainer: {
     borderWidth: 1,

@@ -28,7 +28,7 @@ const EditUserScreen = () => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
-        Alert.alert('Lỗi', `Không thể chọn ảnh: ${response.errorMessage}`);
+        Alert.alert('Lỗi', `Không thể chọn ảnh: ${response.errorCode}`);
       } else if (response.assets && response.assets.length > 0) {
         setImage(response.assets[0].uri || null);
       }
@@ -59,7 +59,11 @@ const EditUserScreen = () => {
   };  
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Sửa User</Text>
         <Image
@@ -76,6 +80,7 @@ const EditUserScreen = () => {
           onChangeText={setUsername}
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Password (VD: Pass123!)"
@@ -84,6 +89,7 @@ const EditUserScreen = () => {
           secureTextEntry
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Email (VD: user@example.com)"
@@ -92,6 +98,7 @@ const EditUserScreen = () => {
           keyboardType="email-address"
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Phone (VD: 0123456789)"
@@ -99,6 +106,7 @@ const EditUserScreen = () => {
           onChangeText={setPhone}
           keyboardType="phone-pad"
           style={styles.input}
+          placeholderTextColor="#888"
         />
         <View style={styles.pickerContainer}>
           <Picker
@@ -180,6 +188,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    color: '#333', // Thêm màu chữ
   },
   pickerContainer: {
     borderWidth: 1,

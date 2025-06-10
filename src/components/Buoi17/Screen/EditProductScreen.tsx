@@ -38,7 +38,7 @@ const EditProductScreen = () => {
       const catList = await ProductDatabase.getCategories();
       setCategories(catList);
     } catch (e) {
-      console.error('Error loading categories:', e);
+      console.error('Lỗi tải danh mục:', e);
       Alert.alert('Lỗi', 'Không thể tải danh sách danh mục');
     }
   };
@@ -46,7 +46,7 @@ const EditProductScreen = () => {
   const pickImage = () => {
     launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        console.log('Người dùng hủy chọn ảnh');
       } else if (response.errorCode) {
         Alert.alert('Lỗi', `Không thể chọn ảnh: ${response.errorMessage}`);
       } else if (response.assets && response.assets.length > 0) {
@@ -56,8 +56,8 @@ const EditProductScreen = () => {
   };
 
   const onSaveProduct = async () => {
-    if (!name.trim() || !priceText.trim() || !image || !categoryId) {
-      Alert.alert('Lỗi', 'Vui lòng nhập tên, giá, chọn ảnh và danh mục');
+    if (!name.trim() || !priceText.trim() || !categoryId) {
+      Alert.alert('Lỗi', 'Vui lòng nhập tên, giá và chọn danh mục');
       return;
     }
 
@@ -71,7 +71,7 @@ const EditProductScreen = () => {
       id: product.id,
       name: name.trim(),
       price: numericPrice.toString(),
-      image,
+      image: image ?? '', // Sử dụng chuỗi rỗng nếu không có ảnh
       categoryId: Number(categoryId),
       description: description.trim() || undefined,
     };
@@ -81,19 +81,23 @@ const EditProductScreen = () => {
       Alert.alert('Thành công', 'Cập nhật sản phẩm thành công');
       navigation.goBack();
     } catch (e) {
-      console.error('Error updating product:', e);
+      console.error('Lỗi cập nhật sản phẩm:', e);
       Alert.alert('Lỗi', 'Cập nhật sản phẩm thất bại');
     }
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Sửa Sản Phẩm</Text>
         <Image
           source={image ? { uri: image } : { uri: 'https://via.placeholder.com/100' }}
           style={styles.image}
-          onError={() => console.log('Failed to load image')}
+          onError={() => console.log('Không thể tải ảnh')}
         />
         <TouchableOpacity style={styles.imageButton} onPress={pickImage} activeOpacity={0.8}>
           <Text style={styles.buttonText}>Chọn Ảnh</Text>
@@ -104,6 +108,7 @@ const EditProductScreen = () => {
           onChangeText={setName}
           style={styles.input}
           autoCapitalize="sentences"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Mô tả sản phẩm (VD: Sushi cuộn cá hồi tươi ngon)"
@@ -113,6 +118,7 @@ const EditProductScreen = () => {
           multiline
           numberOfLines={4}
           autoCapitalize="sentences"
+          placeholderTextColor="#888"
         />
         <View style={styles.priceInputContainer}>
           <TextInput
@@ -121,6 +127,7 @@ const EditProductScreen = () => {
             onChangeText={setPriceText}
             keyboardType="numeric"
             style={[styles.input, styles.priceInput]}
+            placeholderTextColor="#888"
           />
           <Text style={styles.currencyText}>₫</Text>
         </View>
@@ -205,6 +212,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    color: '#333', // Thêm màu chữ
   },
   descriptionInput: {
     height: 100,

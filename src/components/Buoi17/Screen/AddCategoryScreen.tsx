@@ -42,7 +42,11 @@ const AddCategoryScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Thêm Danh Mục</Text>
         <TextInput
@@ -51,6 +55,7 @@ const AddCategoryScreen = () => {
           onChangeText={setName}
           style={styles.input}
           autoCapitalize="sentences"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Tên icon (VD: 🍣)"
@@ -58,6 +63,7 @@ const AddCategoryScreen = () => {
           onChangeText={setIcon}
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Màu hex (VD: #FF0000)"
@@ -65,6 +71,7 @@ const AddCategoryScreen = () => {
           onChangeText={setColor}
           style={styles.input}
           autoCapitalize="none"
+          placeholderTextColor="#888"
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.saveButton} onPress={onSaveCategory} activeOpacity={0.8}>
@@ -113,6 +120,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    color: '#333', // Thêm màu chữ
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -136,18 +144,18 @@ const styles = StyleSheet.create({
   },
   backButton: {
     backgroundColor: '#0288D1', // Xanh dương
-    paddingVertical:16,
-    borderRadius:12,
-    alignItems:'center',
-    flex:1,
-    marginLeft:8,
-    elevation:6,
-    shadowColor:'#000',
-    shadowOpacity:0.3,
-    shadowOffset:{width:0,height:3},
-    shadowRadius:5,
-    borderWidth:1,
-    borderColor:'#FFCA28', // Viền vàng
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flex: 1,
+    marginLeft: 8,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: '#FFCA28', // Viền vàng
   },
   buttonText: {
     color: '#FFFFFF',

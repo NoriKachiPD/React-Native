@@ -54,8 +54,8 @@ const AddProductScreen = () => {
   };
 
   const onSaveProduct = async () => {
-    if (!name.trim() || !priceText.trim() || !image || !categoryId) {
-      Alert.alert('Lỗi', 'Vui lòng nhập tên, giá, chọn ảnh và danh mục');
+    if (!name.trim() || !priceText.trim() || !categoryId) {
+      Alert.alert('Lỗi', 'Vui lòng nhập tên, giá và chọn danh mục');
       return;
     }
 
@@ -69,9 +69,9 @@ const AddProductScreen = () => {
       id: Date.now().toString(),
       name: name.trim(),
       price: numericPrice.toString(),
-      image,
+      image: image ?? '', // Sử dụng chuỗi rỗng nếu không có ảnh
       categoryId: Number(categoryId),
-      description: description.trim() || undefined, // Sửa null thành undefined
+      description: description.trim() || undefined,
     };
 
     try {
@@ -85,7 +85,11 @@ const AddProductScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Thêm Sản Phẩm</Text>
         <Image
@@ -102,6 +106,7 @@ const AddProductScreen = () => {
           onChangeText={setName}
           style={styles.input}
           autoCapitalize="sentences"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Mô tả sản phẩm (VD: Sushi cuộn cá hồi tươi ngon)"
@@ -111,6 +116,7 @@ const AddProductScreen = () => {
           multiline
           numberOfLines={4}
           autoCapitalize="sentences"
+          placeholderTextColor="#888"
         />
         <View style={styles.priceInputContainer}>
           <TextInput
@@ -119,6 +125,7 @@ const AddProductScreen = () => {
             onChangeText={setPriceText}
             keyboardType="numeric"
             style={[styles.input, styles.priceInput]}
+            placeholderTextColor="#888"
           />
           <Text style={styles.currencyText}>₫</Text>
         </View>
@@ -203,6 +210,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    color: '#333', // Thêm màu chữ
   },
   descriptionInput: {
     height: 100,
@@ -255,7 +263,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 5,
     borderWidth: 1,
     borderColor: '#FFCA28', // Viền vàng
@@ -270,7 +278,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 5,
     borderWidth: 1,
     borderColor: '#FFCA28', // Viền vàng
