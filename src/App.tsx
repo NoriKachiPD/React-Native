@@ -1,4 +1,3 @@
-// components/App.tsx
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigatorProduct from './components/Buoi17/AppNavigatorProduct';
