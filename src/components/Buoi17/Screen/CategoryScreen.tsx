@@ -94,6 +94,7 @@ const CategoryScreen = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Tìm kiếm danh mục hoặc sản phẩm..."
+          placeholderTextColor="#888"
           value={searchQuery}
           onChangeText={handleSearch}
           onSubmitEditing={handleSearchSubmit}
