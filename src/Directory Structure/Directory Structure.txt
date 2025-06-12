@@ -1,0 +1,34 @@
+src(Folder)
+-components(Folder)
+--Buoi17(Folder)
+---Screen(Folder)
+----HomeScreen.tsx
+----LoginScreen.tsx
+----RegisterScreen.tsx
+----CategoryScreen.tsx
+----SearchResultsScreen.tsx
+----ProductListScreen.tsx
+----ProductDetailScreen.tsx
+----ProfileScreen.tsx
+----ProfileEditScreen.tsx
+----AdminScreen.tsx
+----UserManagementScreen.tsx
+----AddUserScreen.tsx
+----EditUserScreen.tsx
+----ProductManagementScreen.tsx
+----AddProductScreen.tsx
+----EditProductScreen.tsx
+----CategoryManagementScreen.tsx
+----AddCategoryScreen.tsx
+----EditCategoryScreen.tsx
+---BottomNavBar.
+---AppNavigatorProduct.tsx
+---ProductDatabase.ts
+---UserDatabase.ts
+-Img(Folder)
+--1.jpg
+--Img App(Folder)
+---ic_launcher.png
+---ic_launcher_round.png
+-Directory Structure(Folder)
+--Directory Structure.txt
