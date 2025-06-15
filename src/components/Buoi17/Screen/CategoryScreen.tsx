@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput, Keyboard, } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../AppNavigatorProduct';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,8 +17,8 @@ const CategoryScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<(Category | Product)[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    try {
       const [fetchedCategories, fetchedProducts] = await Promise.all([
         ProductDatabase.getCategories(),
         ProductDatabase.getProducts(),
@@ -26,9 +26,34 @@ const CategoryScreen = () => {
       setCategories(fetchedCategories);
       setProducts(fetchedProducts);
       setLoading(false);
-    };
-    fetchData();
+    } catch (e) {
+      console.error('Error loading data:', e);
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
+
+  const isMaterialIcon = (icon: string) => {
+    // Kiểm tra xem icon có phải là emoji hay không
+    const emojiRegex = /\p{Emoji}/u;
+    return !emojiRegex.test(icon);
+  };
+
+  const renderIcon = (icon: string, size: number, color: string, style?: any) => {
+    if (isMaterialIcon(icon)) {
+      return (
+        <MaterialCommunityIcons name={icon} size={size} color={color} style={style} />
+      );
+    }
+    return (
+      <Text style={[{ fontSize: size, color }, style]}>{icon}</Text>
+    );
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -117,12 +142,16 @@ const CategoryScreen = () => {
               onPress={() => handleResultPress(item)}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons
-                name={'categoryId' in item ? 'package-variant' : item.icon}
-                size={20}
-                color="#333"
-                style={styles.dropdownIcon}
-              />
+              {'categoryId' in item ? (
+                <MaterialCommunityIcons
+                  name="package-variant"
+                  size={20}
+                  color="#333"
+                  style={styles.dropdownIcon}
+                />
+              ) : (
+                renderIcon(item.icon, 20, "#333", styles.dropdownIcon)
+              )}
               <Text style={styles.dropdownText}>
                 {'categoryId' in item ? item.name : `${item.name} (Danh mục)`}
               </Text>
@@ -140,7 +169,7 @@ const CategoryScreen = () => {
             onPress={() => handlePress(item)}
             activeOpacity={0.85}
           >
-            <MaterialCommunityIcons name={item.icon} size={36} color="#fff" style={styles.icon} />
+            {renderIcon(item.icon, 36, "#fff", styles.icon)}
             <Text style={styles.cardText}>{item.name}</Text>
           </TouchableOpacity>
         )}
