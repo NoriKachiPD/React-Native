@@ -14,7 +14,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    const result = await UserDatabase.authenticate(identifier, password);
+    // Xóa khoảng trống ở cuối các trường nhập liệu
+    const trimmedIdentifier = identifier.trim();
+    const trimmedPassword = password.trim();
+
+    const result = await UserDatabase.authenticate(trimmedIdentifier, trimmedPassword);
     if (result.success && result.user) {
       try {
         await AsyncStorage.setItem('user', JSON.stringify(result.user));
@@ -38,7 +42,7 @@ const LoginScreen = () => {
       <TextInput
         placeholder="Nhập Tên đăng nhập, Email hoặc Số điện thoại"
         style={styles.input}
-        onChangeText={setIdentifier}
+        onChangeText={(text) => setIdentifier(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={identifier}
         placeholderTextColor="#999"
         autoCapitalize="none"
@@ -47,7 +51,7 @@ const LoginScreen = () => {
       <TextInput
         placeholder="Nhập mật khẩu"
         style={styles.input}
-        onChangeText={setPassword}
+        onChangeText={(text) => setPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={password}
         secureTextEntry
         placeholderTextColor="#999"

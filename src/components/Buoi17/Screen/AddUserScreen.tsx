@@ -31,18 +31,24 @@ const AddUserScreen = () => {
   };
 
   const onSaveUser = async () => {
-    if (!username || !password || !email || !phone || !level) {
+    // Xóa khoảng trống ở cuối các trường nhập liệu
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedUsername || !trimmedPassword || !trimmedEmail || !trimmedPhone || !level) {
       Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
       return;
     }
 
     const userToSave = {
       id: Date.now(),
-      username,
-      password,
-      email,
-      phone,
-      image: image ?? '', // nếu null thì thay bằng chuỗi rỗng
+      username: trimmedUsername,
+      password: trimmedPassword,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      image: 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg', // Ảnh mặc định mới
       level: Number(level),
     };
 
@@ -72,7 +78,7 @@ const AddUserScreen = () => {
         <TextInput
           placeholder="Username (VD: admin123)"
           value={username}
-          onChangeText={setUsername}
+          onChangeText={(text) => setUsername(text.trim())} // Xóa khoảng trống ngay khi nhập
           style={styles.input}
           autoCapitalize="none"
           placeholderTextColor="#888"
@@ -80,7 +86,7 @@ const AddUserScreen = () => {
         <TextInput
           placeholder="Password (VD: Pass123!)"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
           secureTextEntry
           style={styles.input}
           autoCapitalize="none"
@@ -89,7 +95,7 @@ const AddUserScreen = () => {
         <TextInput
           placeholder="Email (VD: user@example.com)"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => setEmail(text.trim())} // Xóa khoảng trống ngay khi nhập
           keyboardType="email-address"
           style={styles.input}
           autoCapitalize="none"
@@ -98,7 +104,7 @@ const AddUserScreen = () => {
         <TextInput
           placeholder="Phone (VD: 0123456789)"
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => setPhone(text.trim())} // Xóa khoảng trống ngay khi nhập
           keyboardType="phone-pad"
           style={styles.input}
           placeholderTextColor="#888"

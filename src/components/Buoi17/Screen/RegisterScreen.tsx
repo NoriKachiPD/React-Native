@@ -5,10 +5,7 @@ import UserDatabase from '../UserDatabase';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../AppNavigatorProduct';
 
-type RegisterScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'RegisterScreen'
->;
+type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RegisterScreen'>;
 
 const RegisterScreen = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
@@ -29,32 +26,39 @@ const RegisterScreen = () => {
   };
 
   const handleRegister = async () => {
-    if (username === '' || password === '' || confirmPassword === '' || email === '' || phone === '') {
+    // Xóa khoảng trống ở cuối các trường nhập liệu
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    if (trimmedUsername === '' || trimmedPassword === '' || trimmedConfirmPassword === '' || trimmedEmail === '' || trimmedPhone === '') {
       Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin');
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (trimmedPassword !== trimmedConfirmPassword) {
       Alert.alert('Lỗi', 'Mật khẩu xác nhận không khớp');
       return;
     }
 
-    if (!validateEmail(email)) {
+    if (!validateEmail(trimmedEmail)) {
       Alert.alert('Lỗi', 'Email không hợp lệ');
       return;
     }
 
-    if (!validatePhone(phone)) {
+    if (!validatePhone(trimmedPhone)) {
       Alert.alert('Lỗi', 'Số điện thoại không hợp lệ (10-11 số)');
       return;
     }
 
     const success = await UserDatabase.addUser({
-      username,
-      password,
+      username: trimmedUsername,
+      password: trimmedPassword,
       level: 3,
-      email,
-      phone,
+      email: trimmedEmail,
+      phone: trimmedPhone,
       image: 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg', // Ảnh mặc định mới
     });
 
@@ -77,7 +81,7 @@ const RegisterScreen = () => {
       <TextInput
         placeholder="Nhập tên đăng nhập"
         style={styles.input}
-        onChangeText={setUsername}
+        onChangeText={(text) => setUsername(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={username}
         placeholderTextColor="#888888"
         returnKeyType="next"
@@ -86,7 +90,7 @@ const RegisterScreen = () => {
       <TextInput
         placeholder="Nhập Email"
         style={styles.input}
-        onChangeText={setEmail}
+        onChangeText={(text) => setEmail(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={email}
         placeholderTextColor="#888888"
         keyboardType="email-address"
@@ -97,7 +101,7 @@ const RegisterScreen = () => {
       <TextInput
         placeholder="Nhập số điện thoại"
         style={styles.input}
-        onChangeText={setPhone}
+        onChangeText={(text) => setPhone(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={phone}
         placeholderTextColor="#888888"
         keyboardType="phone-pad"
@@ -107,7 +111,7 @@ const RegisterScreen = () => {
       <TextInput
         placeholder="Nhập mật khẩu"
         style={styles.input}
-        onChangeText={setPassword}
+        onChangeText={(text) => setPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={password}
         secureTextEntry
         placeholderTextColor="#888888"
@@ -117,7 +121,7 @@ const RegisterScreen = () => {
       <TextInput
         placeholder="Xác nhận mật khẩu"
         style={styles.input}
-        onChangeText={setConfirmPassword}
+        onChangeText={(text) => setConfirmPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
         value={confirmPassword}
         secureTextEntry
         placeholderTextColor="#888888"
