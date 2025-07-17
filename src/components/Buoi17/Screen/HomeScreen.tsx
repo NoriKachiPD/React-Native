@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 48,
   },
   title: {
-    fontSize: 28,
+    fontSize: 33,
     fontWeight: '900',
     color: '#fff',
     textAlign: 'center',
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: 14,
     color: '#E0F7FA',
     marginTop: 12,
     textAlign: 'center',
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   shopButtonText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
