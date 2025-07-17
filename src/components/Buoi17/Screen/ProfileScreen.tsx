@@ -9,7 +9,7 @@ import BottomNavBar from '../BottomNavBar';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-const DEFAULT_IMAGE = require('../../../Img/1.jpg');
+const DEFAULT_IMAGE = 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg';
 
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
@@ -114,13 +114,31 @@ const ProfileScreen = () => {
           <>
             <View style={styles.profileCard}>
               <Image
-                source={user.image === '1.jpg' ? DEFAULT_IMAGE : { uri: user.image }}
+                source={{ uri: user.image || DEFAULT_IMAGE }}
                 style={styles.profileImage}
+                onError={() => console.log('Failed to load profile image')}
               />
               <Text style={styles.username}>{user.username}</Text>
-              <Text style={styles.level}>Cấp độ người dùng: {user.level === 1 ? 'Admin' : 'Người dùng'}</Text>
-              <Text style={styles.info}>Email: {user.email}</Text>
-              <Text style={styles.info}>Số điện thoại: {user.phone}</Text>
+              <View style={styles.infoContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>📧 Email:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.email}
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>📱 Số điện thoại:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.phone}
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>🎖 Cấp độ:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.level === 1 ? 'Người quản trị' : 'Người dùng'}
+                  </Text>
+                </View>
+              </View>
             </View>
 
             {user.level === 1 && (
@@ -159,49 +177,54 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E8F5E9', // Xanh pastel nhẹ
   },
   scrollContent: {
-    paddingBottom: 60, // Space for BottomNavBar
+    paddingBottom: 80, // Space for BottomNavBar
   },
   title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#333',
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#E91806', // Đỏ chủ đạo
     marginVertical: 20,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   notLoggedInContainer: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    padding: 24,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 4, // Giảm margin để tăng không gian
+    padding: 8, // Giảm padding để tăng không gian
     borderRadius: 16,
     alignItems: 'center',
-    elevation: 6,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
   },
   notLoggedInText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   loginButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#4DB6AC', // Xanh ngọc
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#4DB6AC',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
     marginBottom: 20,
     width: '80%',
   },
@@ -220,94 +243,110 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   registerLinkHighlight: {
-    color: '#FF5722',
+    color: '#E91806', // Đỏ chủ đạo
     fontWeight: '700',
     fontSize: 16,
     lineHeight: 24,
     textDecorationLine: 'underline',
   },
   profileCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    padding: 24,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 4, // Giảm margin để tăng không gian
+    padding: 8, // Giảm padding để tăng không gian
     borderRadius: 16,
     alignItems: 'center',
-    elevation: 6,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 2,
-    borderColor: '#4DB6AC',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 3,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
     marginBottom: 16,
   },
   username: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#333',
-    marginBottom: 8,
-  },
-  level: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#666',
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#E91806', // Đỏ chủ đạo
     marginBottom: 12,
+    textAlign: 'center',
   },
-  info: {
-    fontSize: 16,
-    color: '#666',
+  infoContainer: {
+    width: '100%',
+    paddingHorizontal: 12, // Giảm padding để tăng không gian
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
+    flexWrap: 'nowrap', // Ngăn xuống dòng
+    justifyContent: 'flex-start', // Đẩy nhãn sang trái
+  },
+  infoLabel: {
+    fontSize: 17, // Giảm fontSize để nhãn không xuống dòng
+    fontWeight: '500',
+    color: '#4DB6AC', // Xanh ngọc
+    flexShrink: 0, // Ngăn nhãn bị co lại
+    marginRight: 8, // Khoảng cách giữa nhãn và giá trị
+  },
+  infoText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#333',
+    flex: 1, // Giá trị chiếm phần còn lại
+    flexGrow: 1, // Mở rộng tối đa
+    textAlign: 'left',
   },
   adminButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#4DB6AC', // Xanh ngọc
     paddingVertical: 16,
-    marginHorizontal: 16,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 12,
+    marginHorizontal: 4, // Đồng bộ với profileCard
+    marginVertical: 10,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#4DB6AC',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   editButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#4DB6AC', // Xanh ngọc
     paddingVertical: 16,
-    marginHorizontal: 16,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 12,
+    marginHorizontal: 4, // Đồng bộ với profileCard
+    marginVertical: 10,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#4DB6AC',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   logoutButton: {
-    backgroundColor: '#FF5722',
+    backgroundColor: '#E91806', // Đỏ chủ đạo
     paddingVertical: 16,
-    marginHorizontal: 16,
+    marginHorizontal: 4, // Đồng bộ với profileCard
     marginVertical: 10,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#FF5722',
+    elevation: 8,
+    shadowColor: '#E91806',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 20,
     fontWeight: '700',
   },
 });

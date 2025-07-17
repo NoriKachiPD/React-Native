@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet, ScrollView, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import UserDatabase, { User } from '../UserDatabase';
@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type ProfileEditScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type ProfileEditScreenRouteProp = RouteProp<RootStackParamList, 'ProfileEditScreen'>;
 
-const DEFAULT_IMAGE = require('../../../Img/1.jpg');
+const DEFAULT_IMAGE = 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg';
 
 const ProfileEditScreen = () => {
   const navigation = useNavigation<ProfileEditScreenNavigationProp>();
@@ -21,7 +21,7 @@ const ProfileEditScreen = () => {
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
-  const [image, setImage] = useState(user.image || 'src/Img/1.jpg');
+  const [image, setImage] = useState(user.image || 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,18 +66,26 @@ const ProfileEditScreen = () => {
   };
 
   const handleSave = async () => {
+    // Xóa khoảng trống ở cuối các trường nhập liệu
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedOldPassword = oldPassword.trim();
+    const trimmedNewPassword = newPassword.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+
     // Validate inputs
-    if (!validateUsername(username)) {
+    if (!validateUsername(trimmedUsername)) {
       Alert.alert('Lỗi', 'Tên đăng nhập phải từ 3-20 ký tự, chỉ chứa chữ cái, số và dấu gạch dưới.');
       return;
     }
 
-    if (!validateEmail(email)) {
+    if (!validateEmail(trimmedEmail)) {
       Alert.alert('Lỗi', 'Email không hợp lệ');
       return;
     }
 
-    if (!validatePhone(phone)) {
+    if (!validatePhone(trimmedPhone)) {
       Alert.alert('Lỗi', 'Số điện thoại không hợp lệ (10-11 số)');
       return;
     }
@@ -87,7 +95,7 @@ const ProfileEditScreen = () => {
     const existingUser = users.find(
       (u) =>
         u.username !== user.username &&
-        (u.username === username || u.email === email || u.phone === phone)
+        (u.username === trimmedUsername || u.email === trimmedEmail || u.phone === trimmedPhone)
     );
     if (existingUser) {
       Alert.alert('Lỗi', 'Tên đăng nhập, email hoặc số điện thoại đã được sử dụng');
@@ -95,29 +103,29 @@ const ProfileEditScreen = () => {
     }
 
     // Validate password if provided
-    if (oldPassword || newPassword || confirmPassword) {
-      if (!oldPassword) {
+    if (trimmedOldPassword || trimmedNewPassword || trimmedConfirmPassword) {
+      if (!trimmedOldPassword) {
         Alert.alert('Lỗi', 'Vui lòng nhập mật khẩu cũ');
         return;
       }
 
-      const authResult = await UserDatabase.authenticate(user.username, oldPassword);
+      const authResult = await UserDatabase.authenticate(user.username, trimmedOldPassword);
       if (!authResult.success) {
         Alert.alert('Lỗi', 'Mật khẩu cũ không đúng');
         return;
       }
 
-      if (!newPassword) {
+      if (!trimmedNewPassword) {
         Alert.alert('Lỗi', 'Vui lòng nhập mật khẩu mới');
         return;
       }
 
-      if (!validatePassword(newPassword)) {
+      if (!validatePassword(trimmedNewPassword)) {
         Alert.alert('Lỗi', 'Mật khẩu mới phải từ 6 ký tự, chứa ít nhất một chữ hoa và một ký tự đặc biệt (!@#$%^&*)');
         return;
       }
 
-      if (newPassword !== confirmPassword) {
+      if (trimmedNewPassword !== trimmedConfirmPassword) {
         Alert.alert('Lỗi', 'Mật khẩu mới và xác nhận không khớp');
         return;
       }
@@ -126,11 +134,11 @@ const ProfileEditScreen = () => {
     // Prepare updated user
     const updatedUser: User = {
       ...user,
-      username,
-      email,
-      phone,
+      username: trimmedUsername,
+      email: trimmedEmail,
+      phone: trimmedPhone,
       image,
-      password: newPassword || user.password, // Use new password if provided
+      password: trimmedNewPassword || user.password, // Use new password if provided
     };
 
     // Confirm before saving
@@ -163,184 +171,229 @@ const ProfileEditScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Chỉnh Sửa Hồ Sơ</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Chỉnh Sửa Hồ Sơ</Text>
 
-      <View style={styles.profileCard}>
-        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+        <View style={styles.profileCard}>
+          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
           <Image
-            source={image === 'src/Img/1.jpg' || !image ? DEFAULT_IMAGE : { uri: image }}
-            style={styles.profileImage}
+              source={{ uri: image }}
+              style={styles.profileImage}
+              onError={() => setImage(DEFAULT_IMAGE)} // Fallback to default if image fails
+            />
+            <Text style={styles.imageText}>Thay đổi ảnh đại diện</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.label}>Cấp độ: {user.level === 1 ? 'Admin' : 'Người dùng'}</Text>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Tên đăng nhập</Text>
+          <TextInput
+            placeholder="Tên đăng nhập"
+            style={styles.input}
+            onChangeText={(text) => setUsername(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={username}
+            placeholderTextColor="#999"
+            autoCapitalize="none"
           />
-          <Text style={styles.imageText}>Thay đổi ảnh đại diện</Text>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Email</Text>
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+            onChangeText={(text) => setEmail(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={email}
+            placeholderTextColor="#999"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Số điện thoại</Text>
+          <TextInput
+            placeholder="Số điện thoại"
+            style={styles.input}
+            onChangeText={(text) => setPhone(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={phone}
+            placeholderTextColor="#999"
+            keyboardType="phone-pad"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Mật khẩu cũ</Text>
+          <TextInput
+            placeholder="Mật khẩu cũ"
+            style={styles.input}
+            onChangeText={(text) => setOldPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={oldPassword}
+            secureTextEntry
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Mật khẩu mới</Text>
+          <TextInput
+            placeholder="Mật khẩu mới"
+            style={styles.input}
+            onChangeText={(text) => setNewPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={newPassword}
+            secureTextEntry
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Xác nhận mật khẩu mới</Text>
+          <TextInput
+            placeholder="Xác nhận mật khẩu mới"
+            style={styles.input}
+            onChangeText={(text) => setConfirmPassword(text.trim())} // Xóa khoảng trống ngay khi nhập
+            value={confirmPassword}
+            secureTextEntry
+            placeholderTextColor="#999"
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.saveButton}
+          onPress={handleSave}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Lưu Thay Đổi</Text>
         </TouchableOpacity>
 
-        <Text style={styles.label}>Cấp độ: {user.level === 1 ? 'Admin' : 'Người dùng'}</Text>
-      </View>
-
-      <TextInput
-        placeholder="Tên đăng nhập"
-        style={styles.input}
-        onChangeText={setUsername}
-        value={username}
-        placeholderTextColor="#999"
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholderTextColor="#999"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        placeholder="Số điện thoại"
-        style={styles.input}
-        onChangeText={setPhone}
-        value={phone}
-        placeholderTextColor="#999"
-        keyboardType="phone-pad"
-      />
-
-      <TextInput
-        placeholder="Mật khẩu cũ"
-        style={styles.input}
-        onChangeText={setOldPassword}
-        value={oldPassword}
-        secureTextEntry
-        placeholderTextColor="#999"
-      />
-
-      <TextInput
-        placeholder="Mật khẩu mới"
-        style={styles.input}
-        onChangeText={setNewPassword}
-        value={newPassword}
-        secureTextEntry
-        placeholderTextColor="#999"
-      />
-
-      <TextInput
-        placeholder="Xác nhận mật khẩu mới"
-        style={styles.input}
-        onChangeText={setConfirmPassword}
-        value={confirmPassword}
-        secureTextEntry
-        placeholderTextColor="#999"
-      />
-
-      <TouchableOpacity
-        style={styles.saveButton}
-        onPress={handleSave}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Lưu Thay Đổi</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Quay Lại</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Quay Lại</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
+    flexGrow: 1,
+    backgroundColor: '#E8F5E9', // Xanh pastel nhẹ
+    paddingBottom: 20,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#333',
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#E91806', // Đỏ chủ đạo
     marginVertical: 20,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   profileCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
     padding: 20,
     borderRadius: 16,
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
   },
   imageContainer: {
     alignItems: 'center',
     marginBottom: 16,
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 2,
-    borderColor: '#4DB6AC',
-    marginBottom: 10,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 3,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
+    marginBottom: 12,
   },
   imageText: {
-    color: '#4DB6AC',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#E91806', // Đỏ chủ đạo
+    fontSize: 18,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   label: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#333',
     marginBottom: 8,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+  inputContainer: {
     marginHorizontal: 16,
     marginBottom: 16,
-    borderRadius: 10,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4DB6AC', // Xanh ngọc
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
     fontSize: 16,
     color: '#333',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   saveButton: {
-    backgroundColor: '#4DB6AC',
+    backgroundColor: '#4DB6AC', // Xanh ngọc
     paddingVertical: 16,
     marginHorizontal: 16,
     marginBottom: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#4DB6AC',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   backButton: {
-    backgroundColor: '#888',
+    backgroundColor: '#E91806', // Đỏ chủ đạo
     paddingVertical: 16,
     marginHorizontal: 16,
     marginBottom: 20,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#888',
+    elevation: 8,
+    shadowColor: '#E91806',
     shadowOpacity: 0.4,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 20,
     fontWeight: '700',
   },
 });

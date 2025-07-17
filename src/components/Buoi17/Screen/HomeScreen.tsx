@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions, } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions, Linking, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +17,54 @@ const HomeScreen = () => {
 
   const goToCategories = () => {
     navigation.navigate('CategoryScreen');
+  };
+
+  const openFacebook = async () => {
+    const facebookDeepLink = 'fb://profile/chau.phat.1481';
+    const facebookWebUrl = 'https://www.facebook.com/chau.phat.1481';
+    try {
+      const supported = await Linking.canOpenURL(facebookDeepLink);
+      if (supported) {
+        await Linking.openURL(facebookDeepLink);
+      } else {
+        await Linking.openURL(facebookWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Facebook:', error);
+      await Linking.openURL(facebookWebUrl); // Fallback to web
+    }
+  };
+
+  const openInstagram = async () => {
+    const instagramDeepLink = 'instagram://user?username=norikachi_cr';
+    const instagramWebUrl = 'https://www.instagram.com/norikachi_cr';
+    try {
+      const supported = await Linking.canOpenURL(instagramDeepLink);
+      if (supported) {
+        await Linking.openURL(instagramDeepLink);
+      } else {
+        await Linking.openURL(instagramWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Instagram:', error);
+      await Linking.openURL(instagramWebUrl); // Fallback to web
+    }
+  };
+
+  const openTwitter = async () => {
+    const twitterDeepLink = 'twitter://user?screen_name=NoriKachiCR';
+    const twitterWebUrl = 'https://x.com/NoriKachiCR';
+    try {
+      const supported = await Linking.canOpenURL(twitterDeepLink);
+      if (supported) {
+        await Linking.openURL(twitterDeepLink);
+      } else {
+        await Linking.openURL(twitterWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Twitter:', error);
+      await Linking.openURL(twitterWebUrl); // Fallback to web
+    }
   };
 
   return (
@@ -41,13 +89,13 @@ const HomeScreen = () => {
           <Text style={styles.dealsTitle}>Ưu Đãi Nổi Bật</Text>
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
-            <Text style={styles.dealText}>Combo Izakaya - Giảm 20%</Text>
-            <Text style={styles.dealSubText}>Chương trình chỉ kéo dài đến 23h59 ngày 16/06/2025 – Đừng bỏ lỡ!</Text>
+            <Text style={styles.dealText}>Combo Izakaya - Giảm 96,69%</Text>
+            <Text style={styles.dealSubText}>Chương trình chỉ kéo dài đến 23h59 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
           </View>
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
             <Text style={styles.dealText}>Miễn phí vận chuyển</Text>
-            <Text style={styles.dealSubText}>Đơn hàng từ 500.000 VNĐ</Text>
+            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000.000 VNĐ</Text>
           </View>
         </View>
 
@@ -66,7 +114,7 @@ const HomeScreen = () => {
         <View style={styles.infoContainer}>
           <Text style={styles.infoTitle}>Thông Tin Cửa Hàng</Text>
           <Text style={styles.infoText}>Tên: NoriKachi Modern Izakaya</Text>
-          <Text style={styles.infoText}>Email: Norikachi5002@gmail.com</Text>
+          <Text style={styles.infoText}>Email: phatchau16520@gmail.com</Text>
           <Text style={styles.infoText}>Hotline: 0935 370 171</Text>
         </View>
 
@@ -75,27 +123,33 @@ const HomeScreen = () => {
           <View style={styles.footerGradient} />
           <Text style={styles.footerTitle}>NoriKachi Modern Izakaya</Text>
           <Text style={styles.footerText}>Địa chỉ: 99 Tô Hiến Thành, Phước Mỹ, Sơn Trà, Đà Nẵng 550000</Text>
-          <Text style={styles.footerText}>Email: Norikachi5002@gmail.com</Text>
-          <Text style={styles.footerText}>Hotline: 0935 370 171</Text>
+          <Text style={styles.footerText}>Email: norikachi5002@gmail.com</Text>
+          <Text style={styles.footerText}>Hotline: 0944 963 329</Text>
           <View style={styles.socialContainer}>
-            <MaterialCommunityIcons
-              name="facebook"
-              size={18}
-              color="#fff"
-              style={{ marginHorizontal: 12 }}
-            />
-            <MaterialCommunityIcons
-              name="instagram"
-              size={18}
-              color="#fff"
-              style={{ marginHorizontal: 12 }}
-            />
-            <MaterialCommunityIcons
-              name="twitter"
-              size={18}
-              color="#fff"
-              style={{ marginHorizontal: 12 }}
-            />
+            <TouchableOpacity onPress={openFacebook} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="facebook"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openInstagram} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="instagram"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openTwitter} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="twitter"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
           </View>
           <Text style={styles.footerCopyright}>© 2025 NoriKachi Tedomi MiriKado. All rights reserved.</Text>
         </View>
