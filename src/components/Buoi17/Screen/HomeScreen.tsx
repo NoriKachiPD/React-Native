@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { RootStackParamList } from '../AppNavigatorProduct';
 import BottomNavBar from '../BottomNavBar';
 
@@ -67,6 +68,22 @@ const HomeScreen = () => {
     }
   };
 
+  const openTikTok = async () => {
+    const tiktokDeepLink = 'tiktok://user?username=norikachi_cr';
+    const tiktokWebUrl = 'https://www.tiktok.com/@norikachi16?_t=ZS-8y5xJhcEmYy&_r=1';
+    try {
+      const supported = await Linking.canOpenURL(tiktokDeepLink);
+      if (supported) {
+        await Linking.openURL(tiktokDeepLink);
+      } else {
+        await Linking.openURL(tiktokWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening TikTok:', error);
+      await Linking.openURL(tiktokWebUrl);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -75,7 +92,7 @@ const HomeScreen = () => {
           <View style={styles.headerGradient1} />
           <View style={styles.headerGradient2} />
           <Text style={styles.title}>NoriKachi Modern Izakaya</Text>
-          <Text style={styles.subtitle}>Khám phá món ăn tuyệt vời ngay hôm nay!</Text>
+          <Text style={styles.subtitle}>Khám phá những món ăn tuyệt vời ngay hôm nay!</Text>
         </View>
 
         {/* Banner */}
@@ -90,12 +107,12 @@ const HomeScreen = () => {
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
             <Text style={styles.dealText}>Combo Izakaya - Giảm 96,69%</Text>
-            <Text style={styles.dealSubText}>Chương trình chỉ kéo dài đến 23h59 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
+            <Text style={styles.dealSubText}>Chương trình kéo dài từ 00h00 ngày 31/12/2025 đến 23h59 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
           </View>
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
             <Text style={styles.dealText}>Miễn phí vận chuyển</Text>
-            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000.000 VNĐ</Text>
+            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000.000 VNĐ và có khoảng cách dưới 100 Km - Đừng bỏ lỡ những ưu đãi hấp dẫn!</Text>
           </View>
         </View>
 
@@ -113,7 +130,7 @@ const HomeScreen = () => {
         {/* Thông tin cửa hàng */}
         <View style={styles.infoContainer}>
           <Text style={styles.infoTitle}>Thông Tin Cửa Hàng</Text>
-          <Text style={styles.infoText}>Tên: NoriKachi Modern Izakaya</Text>
+          <Text style={styles.infoText}>Owner: NoriKachi Tedomi Mirikado</Text>
           <Text style={styles.infoText}>Email: phatchau16520@gmail.com</Text>
           <Text style={styles.infoText}>Hotline: 0935 370 171</Text>
         </View>
@@ -122,7 +139,8 @@ const HomeScreen = () => {
         <View style={styles.footer}>
           <View style={styles.footerGradient} />
           <Text style={styles.footerTitle}>NoriKachi Modern Izakaya</Text>
-          <Text style={styles.footerText}>Địa chỉ: 99 Tô Hiến Thành, Phước Mỹ, Sơn Trà, Đà Nẵng 550000</Text>
+          <Text style={styles.footerText}>Địa chỉ 1: 99 Tô Hiến Thành, Phường An Hải, Thành phố Đà Nẵng 550000</Text>
+          <Text style={styles.footerText}>Địa chỉ 2: 05 Hòa Minh 14, Phường Hòa Khánh, Thành phố Đà Nẵng 550000</Text>
           <Text style={styles.footerText}>Email: norikachi5002@gmail.com</Text>
           <Text style={styles.footerText}>Hotline: 0944 963 329</Text>
           <View style={styles.socialContainer}>
@@ -150,8 +168,16 @@ const HomeScreen = () => {
                 style={{ marginHorizontal: 16 }}
               />
             </TouchableOpacity>
+            <TouchableOpacity onPress={openTikTok} activeOpacity={0.7}>
+              <FontAwesome5
+                name="tiktok"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.footerCopyright}>© 2025 NoriKachi Tedomi MiriKado. All rights reserved.</Text>
+          <Text style={styles.footerCopyright}>© 2025 NoriKachi Tedomi MiriKado and NoriKachi Modern Izakaya. All rights reserved.</Text>
         </View>
       </ScrollView>
       <BottomNavBar />
@@ -165,9 +191,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   scrollContent: {
-    paddingBottom: 10, // Giảm để loại bỏ khoảng trống
+    paddingBottom: 10,
   },
-  // Header
   header: {
     paddingVertical: 48,
     paddingHorizontal: 24,
@@ -207,13 +232,12 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#E0F7FA',
     marginTop: 12,
     textAlign: 'center',
     fontWeight: '600',
   },
-  // Banner
   banner: {
     width: width - 32,
     resizeMode: 'contain',
@@ -225,7 +249,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
   },
-  // Ưu đãi
   dealsContainer: {
     marginHorizontal: 16,
     marginBottom: 24,
@@ -263,7 +286,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
-  // Thông tin
   infoContainer: {
     backgroundColor: '#fff',
     marginHorizontal: 16,
@@ -281,14 +303,14 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#333',
     marginBottom: 16,
+    textAlign: 'center',
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#555',
     marginBottom: 12,
     lineHeight: 24,
   },
-  // Nút
   shopButton: {
     backgroundColor: '#4DB6AC',
     paddingVertical: 16,
@@ -310,11 +332,10 @@ const styles = StyleSheet.create({
   },
   shopButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
-  // Footer
   footer: {
     backgroundColor: '#4DB6AC',
     paddingVertical: 32,
