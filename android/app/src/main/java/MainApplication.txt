@@ -1,7 +1,5 @@
 package com.reactnative;
 
-import com.reactnative.BuildConfig; //Thêm sau
-
 import android.app.Application;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -59,10 +57,6 @@ public class MainApplication extends Application implements ReactApplication {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
     }
-
-  if (BuildConfig.DEBUG) {//Thêm sau
     // ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-  }//Thêm sau
   }
-
 }
