@@ -106,13 +106,13 @@ const HomeScreen = () => {
           <Text style={styles.dealsTitle}>Ưu Đãi Nổi Bật</Text>
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
-            <Text style={styles.dealText}>Combo Izakaya - Giảm 96,69%</Text>
-            <Text style={styles.dealSubText}>Chương trình kéo dài từ 00h00 ngày 31/12/2025 đến 23h59 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
+            <Text style={styles.dealText}>Combo Izakaya - Giảm 50%</Text>
+            <Text style={styles.dealSubText}>Chương trình kéo dài từ 06h00 ngày 31/12/2025 đến 22h00 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
           </View>
           <View style={styles.dealCard}>
             <View style={styles.dealGradient} />
             <Text style={styles.dealText}>Miễn phí vận chuyển</Text>
-            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000.000 VNĐ và có khoảng cách dưới 100 Km - Đừng bỏ lỡ những ưu đãi hấp dẫn!</Text>
+            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000 VNĐ và có khoảng cách dưới 5 Km - Đừng bỏ lỡ những ưu đãi hấp dẫn!</Text>
           </View>
         </View>
 
@@ -139,8 +139,8 @@ const HomeScreen = () => {
         <View style={styles.footer}>
           <View style={styles.footerGradient} />
           <Text style={styles.footerTitle}>NoriKachi Modern Izakaya</Text>
-          <Text style={styles.footerText}>Địa chỉ 1: 99 Tô Hiến Thành, Phường An Hải, Thành phố Đà Nẵng 550000</Text>
-          <Text style={styles.footerText}>Địa chỉ 2: 05 Hòa Minh 14, Phường Hòa Khánh, Thành phố Đà Nẵng 550000</Text>
+          <Text style={styles.footerText}>Địa chỉ 1: 99 Tô Hiến Thành, Phường An Hải, Thành phố Đà Nẵng</Text>
+          <Text style={styles.footerText}>Địa chỉ 2: 05 Hòa Minh 14, Phường Hòa Khánh, Thành phố Đà Nẵng</Text>
           <Text style={styles.footerText}>Email: norikachi5002@gmail.com</Text>
           <Text style={styles.footerText}>Hotline: 0944 963 329</Text>
           <View style={styles.socialContainer}>

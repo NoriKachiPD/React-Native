@@ -135,7 +135,7 @@ const ProfileScreen = () => {
                 <View style={styles.infoRow}>
                   <Text style={styles.infoLabel}>🎖 Cấp độ:</Text>
                   <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
-                    {user.level === 1 ? 'Người quản trị' : 'Người dùng'}
+                    {user.level === 1 ? 'Quản trị viên' : 'Người dùng'}
                   </Text>
                 </View>
               </View>

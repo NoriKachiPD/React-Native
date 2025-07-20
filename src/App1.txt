@@ -8,30 +8,25 @@ export default function App() {
   useEffect(() => {
     // async function initialize() {
     //   await UserDatabase.init();
-    //   console.log('User Database initialized with default admin.');
+    //   console.log('UserDatabase initialized with default admin.');
     // }
     // initialize();
 
     // Tạo kênh thông báo
     PushNotification.createChannel(
       {
-        channelId: 'custom-sound-channel', // đổi tên channel cho chắc chắn
-        channelName: 'Custom Sound Channel',
-        soundName: 'notification', // KHÔNG có .mp3
-        importance: 4, // max
-        vibrate: true,
+        channelId: 'default-channel-id',
+        channelName: 'Default Channel',
       },
       (created) => console.log(`createChannel returned '${created}'`)
     );
 
     // Gửi thông báo khi app mở
     PushNotification.localNotification({
-      channelId: 'custom-sound-channel',
-      title: 'WELCOME',
-      message: 'App khởi động thành công. Chúc bạn một ngày tốt lành!',
-      playSound: true,
-      soundName: 'notification', // KHÔNG .mp3
-    });    
+      channelId: 'default-channel-id',
+      title: 'Welcome',
+      message: 'Ứng dụng khởi động thành công. Chúc bạn một ngày tuyệt vời!',
+    });
   }, []);
 
   return (
