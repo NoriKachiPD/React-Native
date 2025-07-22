@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowOffset: { width: 0, height: 5 },
     shadowRadius: 8,
-    borderWidth: 2,
-    borderColor: '#FFCA28', // Viền vàng
+    // borderWidth: 2,
+    // borderColor: '#FFCA28', // Viền vàng
   },
   image: {
     width: 200,
@@ -278,8 +278,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
-    borderWidth: 1,
-    borderColor: '#FFCA28', // Viền vàng
+    // borderWidth: 1,
+    // borderColor: '#FFCA28', // Viền vàng
   },
   backButton: {
     backgroundColor: '#0288D1', // Xanh dương
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
-    borderWidth: 1,
-    borderColor: '#FFCA28', // Viền vàng
+    // borderWidth: 1,
+    // borderColor: '#FFCA28', // Viền vàng
     marginBottom: 65, // Cố định 65px từ đáy nút đến đáy màn hình
   },
   buttonText: {
