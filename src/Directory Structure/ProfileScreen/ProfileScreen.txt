@@ -1,0 +1,354 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Alert, } from 'react-native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RootStackParamList } from '../AppNavigatorProduct';
+import { User } from '../UserDatabase';
+import BottomNavBar from '../BottomNavBar';
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+const DEFAULT_IMAGE = 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg';
+
+const ProfileScreen = () => {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const isFocused = useIsFocused();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUser = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error fetching user from AsyncStorage:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchUser();
+    }
+  }, [isFocused]);
+
+  const handleAdminScreen = () => {
+    navigation.navigate('AdminScreen');
+  };
+
+  const handleEditProfile = () => {
+    if (user) {
+      navigation.navigate('ProfileEditScreen', { user });
+    }
+  };
+
+  const handleLogout = async () => {
+    Alert.alert('Đăng Xuất', 'Bạn có chắc muốn đăng xuất?', [
+      { text: 'Hủy', style: 'cancel' },
+      {
+        text: 'Đăng Xuất',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('user');
+            setUser(null);
+            navigation.replace('HomeScreen');
+          } catch (error) {
+            console.error('Error clearing AsyncStorage:', error);
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleLogin = () => {
+    navigation.navigate('LoginScreen');
+  };
+
+  const handleRegister = () => {
+    navigation.navigate('RegisterScreen');
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Đang tải...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.title}>Hồ Sơ Người Dùng</Text>
+
+        {!user ? (
+          <View style={styles.notLoggedInContainer}>
+            <Text style={styles.notLoggedInText}>Bạn chưa đăng nhập, hãy đăng nhập</Text>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={handleLogin}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>Đăng Nhập</Text>
+            </TouchableOpacity>
+            <View style={styles.registerLinkContainer}>
+              <View style={styles.registerLinkWrapper}>
+                <Text style={styles.registerLink}>Bạn chưa có tài khoản? </Text>
+                <TouchableOpacity
+                  onPress={handleRegister}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.registerLinkHighlight}>Đăng ký ngay</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        ) : (
+          <>
+            <View style={styles.profileCard}>
+              <Image
+                source={{ uri: user.image || DEFAULT_IMAGE }}
+                style={styles.profileImage}
+                onError={() => console.log('Failed to load profile image')}
+              />
+              <Text style={styles.username}>{user.username}</Text>
+              <View style={styles.infoContainer}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>📧 Email:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.email}
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>📱 Số điện thoại:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.phone}
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>🎖 Cấp độ:</Text>
+                  <Text style={styles.infoText} numberOfLines={1} ellipsizeMode="tail">
+                    {user.level === 1 ? 'Quản trị viên' : 'Người dùng'}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            {user.level === 1 && (
+              <TouchableOpacity
+                style={styles.adminButton}
+                onPress={handleAdminScreen}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.buttonText}>Quản Lý Admin</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={handleEditProfile}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>Chỉnh Sửa Hồ Sơ</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={handleLogout}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>Đăng Xuất</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </ScrollView>
+      <BottomNavBar />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E8F5E9', // Xanh pastel nhẹ
+  },
+  scrollContent: {
+    paddingBottom: 80, // Space for BottomNavBar
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#E91806', // Đỏ chủ đạo
+    marginVertical: 20,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
+  },
+  notLoggedInContainer: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 4, // Giảm margin để tăng không gian
+    padding: 8, // Giảm padding để tăng không gian
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
+  },
+  notLoggedInText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  loginButton: {
+    backgroundColor: '#4DB6AC', // Xanh ngọc
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#4DB6AC',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    marginBottom: 20,
+    width: '80%',
+  },
+  registerLinkContainer: {
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  registerLinkWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+  },
+  registerLink: {
+    color: '#666',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  registerLinkHighlight: {
+    color: '#E91806', // Đỏ chủ đạo
+    fontWeight: '700',
+    fontSize: 16,
+    lineHeight: 24,
+    textDecorationLine: 'underline',
+  },
+  profileCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 4, // Giảm margin để tăng không gian
+    padding: 8, // Giảm padding để tăng không gian
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
+  },
+  profileImage: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 3,
+    borderColor: '#4DB6AC', // Viền xanh ngọc
+    marginBottom: 16,
+  },
+  username: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#E91806', // Đỏ chủ đạo
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  infoContainer: {
+    width: '100%',
+    paddingHorizontal: 12, // Giảm padding để tăng không gian
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    flexWrap: 'nowrap', // Ngăn xuống dòng
+    justifyContent: 'flex-start', // Đẩy nhãn sang trái
+  },
+  infoLabel: {
+    fontSize: 17, // Giảm fontSize để nhãn không xuống dòng
+    fontWeight: '500',
+    color: '#4DB6AC', // Xanh ngọc
+    flexShrink: 0, // Ngăn nhãn bị co lại
+    marginRight: 8, // Khoảng cách giữa nhãn và giá trị
+  },
+  infoText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#333',
+    flex: 1, // Giá trị chiếm phần còn lại
+    flexGrow: 1, // Mở rộng tối đa
+    textAlign: 'left',
+  },
+  adminButton: {
+    backgroundColor: '#4DB6AC', // Xanh ngọc
+    paddingVertical: 16,
+    marginHorizontal: 4, // Đồng bộ với profileCard
+    marginVertical: 10,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#4DB6AC',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  },
+  editButton: {
+    backgroundColor: '#4DB6AC', // Xanh ngọc
+    paddingVertical: 16,
+    marginHorizontal: 4, // Đồng bộ với profileCard
+    marginVertical: 10,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#4DB6AC',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  },
+  logoutButton: {
+    backgroundColor: '#E91806', // Đỏ chủ đạo
+    paddingVertical: 16,
+    marginHorizontal: 4, // Đồng bộ với profileCard
+    marginVertical: 10,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#E91806',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '700',
+  },
+});
+
+export default ProfileScreen;

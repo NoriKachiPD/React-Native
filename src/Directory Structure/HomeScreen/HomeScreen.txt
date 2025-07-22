@@ -1,0 +1,385 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions, Linking, } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { RootStackParamList } from '../AppNavigatorProduct';
+import BottomNavBar from '../BottomNavBar';
+
+type NavigationPropType = NativeStackNavigationProp<RootStackParamList>;
+
+const { width } = Dimensions.get('window');
+const BANNER_ASPECT_RATIO = 1536 / 1024; // Tỷ lệ 3:2
+
+const HomeScreen = () => {
+  const navigation = useNavigation<NavigationPropType>();
+  const [buttonPressed, setButtonPressed] = useState(false);
+
+  const goToCategories = () => {
+    navigation.navigate('CategoryScreen');
+  };
+
+  const openFacebook = async () => {
+    const facebookDeepLink = 'fb://profile/chau.phat.1481';
+    const facebookWebUrl = 'https://www.facebook.com/chau.phat.1481';
+    try {
+      const supported = await Linking.canOpenURL(facebookDeepLink);
+      if (supported) {
+        await Linking.openURL(facebookDeepLink);
+      } else {
+        await Linking.openURL(facebookWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Facebook:', error);
+      await Linking.openURL(facebookWebUrl); // Fallback to web
+    }
+  };
+
+  const openInstagram = async () => {
+    const instagramDeepLink = 'instagram://user?username=norikachi_cr';
+    const instagramWebUrl = 'https://www.instagram.com/norikachi_cr';
+    try {
+      const supported = await Linking.canOpenURL(instagramDeepLink);
+      if (supported) {
+        await Linking.openURL(instagramDeepLink);
+      } else {
+        await Linking.openURL(instagramWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Instagram:', error);
+      await Linking.openURL(instagramWebUrl); // Fallback to web
+    }
+  };
+
+  const openTwitter = async () => {
+    const twitterDeepLink = 'twitter://user?screen_name=NoriKachiCR';
+    const twitterWebUrl = 'https://x.com/NoriKachiCR';
+    try {
+      const supported = await Linking.canOpenURL(twitterDeepLink);
+      if (supported) {
+        await Linking.openURL(twitterDeepLink);
+      } else {
+        await Linking.openURL(twitterWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening Twitter:', error);
+      await Linking.openURL(twitterWebUrl); // Fallback to web
+    }
+  };
+
+  const openTikTok = async () => {
+    const tiktokDeepLink = 'tiktok://user?username=norikachi_cr';
+    const tiktokWebUrl = 'https://www.tiktok.com/@norikachi16?_t=ZS-8y5xJhcEmYy&_r=1';
+    try {
+      const supported = await Linking.canOpenURL(tiktokDeepLink);
+      if (supported) {
+        await Linking.openURL(tiktokDeepLink);
+      } else {
+        await Linking.openURL(tiktokWebUrl);
+      }
+    } catch (error) {
+      console.error('Error opening TikTok:', error);
+      await Linking.openURL(tiktokWebUrl);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerGradient1} />
+          <View style={styles.headerGradient2} />
+          <Text style={styles.title}>NoriKachi Modern Izakaya</Text>
+          <Text style={styles.subtitle}>Khám phá những món ăn tuyệt vời ngay hôm nay!</Text>
+        </View>
+
+        {/* Banner */}
+        <Image
+          source={require('../../../Img/2.png')}
+          style={[styles.banner, { height: (width - 32) / BANNER_ASPECT_RATIO }]}
+        />
+
+        {/* Ưu đãi nổi bật */}
+        <View style={styles.dealsContainer}>
+          <Text style={styles.dealsTitle}>Ưu Đãi Nổi Bật</Text>
+          <View style={styles.dealCard}>
+            <View style={styles.dealGradient} />
+            <Text style={styles.dealText}>Combo Izakaya - Giảm 50%</Text>
+            <Text style={styles.dealSubText}>Chương trình kéo dài từ 06h00 ngày 31/12/2025 đến 22h00 ngày 31/12/2025 – Đừng bỏ lỡ!</Text>
+          </View>
+          <View style={styles.dealCard}>
+            <View style={styles.dealGradient} />
+            <Text style={styles.dealText}>Miễn phí vận chuyển</Text>
+            <Text style={styles.dealSubText}>Đơn hàng từ 1.000.000 VNĐ và có khoảng cách dưới 5 Km - Đừng bỏ lỡ những ưu đãi hấp dẫn!</Text>
+          </View>
+        </View>
+
+        {/* Nút khám phá */}
+        <TouchableOpacity
+          style={[styles.shopButton, { opacity: buttonPressed ? 0.7 : 1 }]}
+          onPress={goToCategories}
+          onPressIn={() => setButtonPressed(true)}
+          onPressOut={() => setButtonPressed(false)}
+          activeOpacity={0.7}>
+          <View style={styles.buttonGradient} />
+          <Text style={styles.shopButtonText}>Khám Phá Sản Phẩm</Text>
+        </TouchableOpacity>
+
+        {/* Thông tin cửa hàng */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoTitle}>Thông Tin Cửa Hàng</Text>
+          <Text style={styles.infoText}>Owner: NoriKachi Tedomi Mirikado</Text>
+          <Text style={styles.infoText}>Email: phatchau16520@gmail.com</Text>
+          <Text style={styles.infoText}>Hotline: 0935 370 171</Text>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <View style={styles.footerGradient} />
+          <Text style={styles.footerTitle}>NoriKachi Modern Izakaya</Text>
+          <Text style={styles.footerText}>Địa chỉ 1: 99 Tô Hiến Thành, Phường An Hải, Thành phố Đà Nẵng</Text>
+          <Text style={styles.footerText}>Địa chỉ 2: 05 Hòa Minh 14, Phường Hòa Khánh, Thành phố Đà Nẵng</Text>
+          <Text style={styles.footerText}>Email: norikachi5002@gmail.com</Text>
+          <Text style={styles.footerText}>Hotline: 0944 963 329</Text>
+          <View style={styles.socialContainer}>
+            <TouchableOpacity onPress={openFacebook} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="facebook"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openInstagram} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="instagram"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openTwitter} activeOpacity={0.7}>
+              <MaterialCommunityIcons
+                name="twitter"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openTikTok} activeOpacity={0.7}>
+              <FontAwesome5
+                name="tiktok"
+                size={32}
+                color="#fff"
+                style={{ marginHorizontal: 16 }}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.footerCopyright}>© 2025 NoriKachi Tedomi MiriKado and NoriKachi Modern Izakaya. All rights reserved.</Text>
+        </View>
+      </ScrollView>
+      <BottomNavBar />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  scrollContent: {
+    paddingBottom: 10,
+  },
+  header: {
+    paddingVertical: 48,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    backgroundColor: '#4DB6AC',
+    borderBottomLeftRadius: 48,
+    borderBottomRightRadius: 48,
+    marginBottom: 24,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+  },
+  headerGradient1: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#26A69A',
+    opacity: 0.3,
+    borderBottomLeftRadius: 48,
+    borderBottomRightRadius: 48,
+  },
+  headerGradient2: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#E0F7FA',
+    opacity: 0.1,
+    borderBottomLeftRadius: 48,
+    borderBottomRightRadius: 48,
+  },
+  title: {
+    fontSize: 33,
+    fontWeight: '900',
+    color: '#fff',
+    textAlign: 'center',
+    letterSpacing: 1,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#E0F7FA',
+    marginTop: 12,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  banner: {
+    width: width - 32,
+    resizeMode: 'contain',
+    borderRadius: 24,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+  },
+  dealsContainer: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+  },
+  dealsTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#333',
+    marginBottom: 16,
+  },
+  dealCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+  },
+  dealGradient: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#FF7043',
+    opacity: 0.1,
+    borderRadius: 16,
+  },
+  dealText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333',
+  },
+  dealSubText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  infoContainer: {
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    padding: 24,
+    borderRadius: 24,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    marginBottom: 24,
+  },
+  infoTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  infoText: {
+    fontSize: 17,
+    color: '#555',
+    marginBottom: 12,
+    lineHeight: 24,
+  },
+  shopButton: {
+    backgroundColor: '#4DB6AC',
+    paddingVertical: 16,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#4DB6AC',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  },
+  buttonGradient: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#26A69A',
+    opacity: 0.2,
+    borderRadius: 16,
+  },
+  shopButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  footer: {
+    backgroundColor: '#4DB6AC',
+    paddingVertical: 32,
+    paddingHorizontal: 24,
+    borderTopLeftRadius: 48,
+    borderTopRightRadius: 48,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: -4 },
+    shadowRadius: 12,
+    marginBottom: -10,
+  },
+  footerGradient: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#26A69A',
+    opacity: 0.3,
+    borderTopLeftRadius: 48,
+    borderTopRightRadius: 48,
+  },
+  footerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#fff',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#E0F7FA',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 16,
+  },
+  footerCopyright: {
+    fontSize: 12,
+    color: '#E0F7FA',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+});
+
+export default HomeScreen;

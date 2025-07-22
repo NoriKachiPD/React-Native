@@ -47,6 +47,7 @@ const UserDatabase = {
     }
   },
 
+
   // init: async (): Promise<void> => {
   //   try {
   //     await UserDatabase.migrateAddIdToUsers();
@@ -73,6 +74,7 @@ const UserDatabase = {
   //   }
   // },
 
+  
   getUsers: async (): Promise<User[]> => {
     try {
       const jsonValue = await AsyncStorage.getItem(USERS_KEY);

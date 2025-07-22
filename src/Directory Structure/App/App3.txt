@@ -1,0 +1,36 @@
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigatorProduct from './components/Buoi17/AppNavigatorProduct';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import PushNotification from 'react-native-push-notification';
+
+export default function App() {
+  useEffect(() => {
+    PushNotification.createChannel(
+      {
+        channelId: 'custom-sound-channel',
+        channelName: 'Custom Sound Channel',
+        soundName: 'notification',
+        importance: 4,
+        vibrate: true,
+      },
+      (created) => console.log(`createChannel returned '${created}'`)
+    );
+
+    PushNotification.localNotification({
+      channelId: 'custom-sound-channel',
+      title: 'WELCOME',
+      message: 'App khởi động thành công. Chúc bạn một ngày tốt lành!',
+      playSound: true,
+      soundName: 'notification',
+    });    
+  }, []);
+
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <AppNavigatorProduct />
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
+}
