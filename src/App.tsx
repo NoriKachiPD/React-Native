@@ -1,37 +1,28 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigatorProduct from './components/Buoi17/AppNavigatorProduct';
-import UserDatabase from './components/Buoi17/UserDatabase';
-import PushNotification from 'react-native-push-notification';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import PushNotification from 'react-native-push-notification';
 
 export default function App() {
   useEffect(() => {
-    // async function initialize() {
-    //   await UserDatabase.init();
-    //   console.log('User Database initialized with default admin.');
-    // }
-    // initialize();
-
-    // Tạo kênh thông báo
     PushNotification.createChannel(
       {
-        channelId: 'custom-sound-channel', // đổi tên channel cho chắc chắn
-        channelName: 'Custom Sound Channel',
-        soundName: 'notification', // KHÔNG có .mp3
-        importance: 4, // max
+        channelId: 'custom-sound-channel-v1',
+        channelName: 'Custom Sound Channel V1',
+        soundName: 'sound',
+        importance: 4,
         vibrate: true,
       },
       (created) => console.log(`createChannel returned '${created}'`)
     );
 
-    // Gửi thông báo khi app mở
     PushNotification.localNotification({
-      channelId: 'custom-sound-channel',
-      title: 'Chào mừng!',
-      message: 'Ứng dụng khởi động thành công. Chúc bạn một ngày tốt lành!',
+      channelId: 'custom-sound-channel-v1',
+      title: 'WELCOME',
+      message: 'App khởi động thành công. Chúc bạn một ngày tốt lành!',
       playSound: true,
-      soundName: 'notification', // KHÔNG .mp3
+      soundName: 'sound',
     });    
   }, []);
 
