@@ -8,9 +8,9 @@ export default function App() {
   useEffect(() => {
     PushNotification.createChannel(
       {
-        channelId: 'custom-sound-channel-v1',
-        channelName: 'Custom Sound Channel V1',
-        soundName: 'sound',
+        channelId: 'custom-sound-channel-v4',
+        channelName: 'Custom Sound Channel V4',
+        soundName: 'f1',
         importance: 4,
         vibrate: true,
       },
@@ -18,11 +18,11 @@ export default function App() {
     );
 
     PushNotification.localNotification({
-      channelId: 'custom-sound-channel-v1',
-      title: 'WELCOME',
+      channelId: 'custom-sound-channel-v4',
+      title: 'Have a nice day',
       message: 'App khởi động thành công. Chúc bạn một ngày tốt lành!',
       playSound: true,
-      soundName: 'sound',
+      soundName: 'f1',
     });    
   }, []);
 
